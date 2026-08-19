@@ -55,12 +55,16 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-// Connect DB and then start listening
+// Connect DB and start listening for standalone local server
 const startServer = async () => {
   await connectDB();
-  app.listen(PORT, () => {
-    console.log(`[Server] Enterprise API Server listening on port ${PORT}`);
-  });
+  if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+      console.log(`[Server] Enterprise API Server listening on port ${PORT}`);
+    });
+  }
 };
 
 startServer();
+
+export default app;
