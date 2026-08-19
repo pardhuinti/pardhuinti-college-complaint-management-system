@@ -1,72 +1,86 @@
 import mongoose from 'mongoose';
-import dns from 'dns';
-import crypto from 'crypto';
 import User from '../models/User.js';
 import Complaint from '../models/Complaint.js';
 
-// Configure DNS resolvers
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1']);
-} catch (dnsErr) {
-  // Ignore DNS override errors if custom DNS is not permitted
+/**
+ * Global connection cache for serverless environments (e.g. Vercel)
+ */
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null, isSeeded: false };
 }
 
 const getDefaultCredentials = () => {
-  const adminEmail =
-    process.env.DEFAULT_ADMIN_EMAIL?.trim() ||
-    `admin+${crypto.randomBytes(4).toString('hex')}@yourcollege.edu`;
-  const studentEmail =
-    process.env.DEFAULT_STUDENT_EMAIL?.trim() ||
-    `student+${crypto.randomBytes(4).toString('hex')}@yourcollege.edu`;
-
-  const adminPassword =
-    process.env.DEFAULT_ADMIN_PASSWORD?.trim() ||
-    process.env.ADMIN_PASSWORD?.trim() ||
-    crypto.randomBytes(10).toString('hex');
-
-  const studentPassword =
-    process.env.DEFAULT_STUDENT_PASSWORD?.trim() ||
-    process.env.STUDENT_PASSWORD?.trim() ||
-    crypto.randomBytes(10).toString('hex');
+  const adminEmail = process.env.DEFAULT_ADMIN_EMAIL?.trim() || 'admin@college.edu';
+  const studentEmail = process.env.DEFAULT_STUDENT_EMAIL?.trim() || 'student@college.edu';
+  const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD?.trim() || 'Admin@2026!';
+  const studentPassword = process.env.DEFAULT_STUDENT_PASSWORD?.trim() || 'Student@2026!';
 
   return { adminEmail, adminPassword, studentEmail, studentPassword };
 };
 
 export const connectDB = async () => {
-  try {
-    console.log('[Database] Connecting to MongoDB Atlas...');
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      family: 4,
-      serverSelectionTimeoutMS: 15000,
-      connectTimeoutMS: 15000,
-      socketTimeoutMS: 45000,
-    });
+  const uri = process.env.MONGODB_URI;
 
-    console.log(`[Database] MongoDB Connected: ${conn.connection.host}`);
-
-    await seedInitialData();
-  } catch (error) {
-    console.error(`[Database Error] Connection failure: ${error.message}`);
+  if (!uri) {
+    throw new Error('MONGODB_URI is not defined in environment variables');
   }
+
+  // If already connected, return cached connection
+  if (cached.conn && mongoose.connection.readyState === 1) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+    };
+
+    console.log('[Database] Establishing MongoDB connection...');
+    cached.promise = mongoose.connect(uri, opts).then((mongooseInstance) => {
+      console.log(`[Database] MongoDB Connected: ${mongooseInstance.connection.host}`);
+      return mongooseInstance;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+    
+    // Seed initial demo data once per deployment lifecycle if needed
+    if (!cached.isSeeded) {
+      cached.isSeeded = true;
+      seedInitialData().catch((err) => {
+        console.warn('[Database Seed Warning]:', err.message);
+      });
+    }
+  } catch (error) {
+    cached.promise = null;
+    cached.conn = null;
+    console.error(`[Database Error] Connection failure: ${error.message}`);
+    throw error;
+  }
+
+  return cached.conn;
 };
 
-const seedInitialData = async () => {
+export const seedInitialData = async () => {
   try {
     const { adminEmail, adminPassword, studentEmail, studentPassword } = getDefaultCredentials();
     const adminLowerEmail = adminEmail.toLowerCase();
     const studentLowerEmail = studentEmail.toLowerCase();
 
+    // Check if admin user exists; create only if missing
     let existingAdmin = await User.findOne({
       $or: [{ email: adminLowerEmail }, { studentId: 'ADM-001', role: 'admin' }],
-    });
-    let existingStudent = await User.findOne({
-      $or: [{ email: studentLowerEmail }, { studentId: 'STU-2024-8841', role: 'student' }],
     });
 
     if (!existingAdmin) {
       existingAdmin = await User.create({
         studentId: 'ADM-001',
-        fullName: 'Pardhu',
+        fullName: 'Administrator',
         email: adminLowerEmail,
         phoneNumber: '+1 800 555 0199',
         department: 'Administration & Infrastructure Management',
@@ -78,26 +92,13 @@ const seedInitialData = async () => {
         status: 'active',
       });
       console.log('[Seed] Admin user created successfully with email:', adminLowerEmail);
-    } else {
-      // Delete and recreate admin to ensure password is correctly hashed
-      await User.deleteOne({ _id: existingAdmin._id });
-      existingAdmin = await User.create({
-        studentId: 'ADM-001',
-        fullName: 'Pardhu',
-        email: adminLowerEmail,
-        phoneNumber: '+1 800 555 0199',
-        department: 'Administration & Infrastructure Management',
-        academicYear: 'N/A',
-        section: 'N/A',
-        password: adminPassword,
-        role: 'admin',
-        avatar: '',
-        status: 'active',
-      });
-      console.log('[Seed] Admin user reset with updated credentials for email:', adminLowerEmail);
     }
 
-    let studentAccount = existingStudent;
+    // Check if student user exists; create only if missing
+    let studentAccount = await User.findOne({
+      $or: [{ email: studentLowerEmail }, { studentId: 'STU-2024-8841', role: 'student' }],
+    });
+
     if (!studentAccount) {
       studentAccount = await User.create({
         studentId: 'STU-2024-8841',
@@ -113,25 +114,9 @@ const seedInitialData = async () => {
         status: 'active',
       });
       console.log('[Seed] Student user created successfully with email:', studentLowerEmail);
-    } else {
-      // Delete and recreate student to ensure password is correctly hashed
-      await User.deleteOne({ _id: existingStudent._id });
-      studentAccount = await User.create({
-        studentId: 'STU-2024-8841',
-        fullName: 'Alex Mercer',
-        email: studentLowerEmail,
-        phoneNumber: '+1 555 234 5678',
-        department: 'Computer Science & Engineering',
-        academicYear: '3rd Year',
-        section: 'A',
-        password: studentPassword,
-        role: 'student',
-        avatar: '',
-        status: 'active',
-      });
-      console.log('[Seed] Student user reset with updated credentials for email:', studentLowerEmail);
     }
 
+    // Check if demo complaint exists; create only if collection is empty
     const complaintCount = await Complaint.countDocuments();
     if (complaintCount === 0 && studentAccount) {
       await Complaint.create({
@@ -154,17 +139,14 @@ const seedInitialData = async () => {
         adminRemarks: [
           {
             remark: 'Technician assigned to inspect HDMI cable and inverter.',
-            addedBy: 'Pardhu',
+            addedBy: 'Administrator',
             createdAt: new Date(),
           },
         ],
       });
     }
-
-    console.log('[Database Seed] Default admin and student accounts are ready for login.');
-    console.log(`[Database Seed] Admin email: ${adminEmail}`);
-    console.log(`[Database Seed] Student email: ${studentEmail}`);
   } catch (err) {
     console.error('[Database Seed Error]:', err.message);
   }
 };
+

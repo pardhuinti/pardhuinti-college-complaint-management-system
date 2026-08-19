@@ -1,15 +1,33 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 
-const uploadsDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+// Determine uploads directory safely based on environment
+let uploadsDir = path.join(process.cwd(), 'uploads');
+
+try {
+  if (process.env.VERCEL) {
+    uploadsDir = path.join(os.tmpdir(), 'uploads');
+  }
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+} catch (err) {
+  // Gracefully fallback to system temporary directory if current directory is read-only
+  try {
+    uploadsDir = path.join(os.tmpdir(), 'uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+  } catch (tmpErr) {
+    console.warn('[Upload Warning] Read-only environment detected, using memory storage fallback');
+  }
 }
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, uploadsDir);
   },
   filename(req, file, cb) {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
@@ -36,3 +54,4 @@ export const upload = multer({
     checkFileType(file, cb);
   },
 });
+
