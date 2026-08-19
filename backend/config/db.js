@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
+import dns from 'dns';
 import User from '../models/User.js';
 import Complaint from '../models/Complaint.js';
+
+// Safe DNS fallback for local environments
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (e) {
+  // Ignore DNS override errors on restricted environments
+}
 
 /**
  * Global connection cache for serverless environments (e.g. Vercel)
