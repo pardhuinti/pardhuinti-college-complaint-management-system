@@ -4,6 +4,8 @@ node_modules/
 backend/.env
 frontend/.env
 dist/
+frontend/dist/
 backend/uploads/*
 !backend/uploads/.gitkeep
-
+server/
+server
