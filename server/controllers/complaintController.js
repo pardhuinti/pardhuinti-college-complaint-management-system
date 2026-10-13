@@ -131,7 +131,7 @@ export const createComplaint = async (req, res) => {
       remark: 'Complaint registered by student',
     });
 
-    // Notify Admin (Pardhu)
+    // Notify Admin
     const adminUser = await User.findOne({ role: 'admin' });
     if (adminUser) {
       await Notification.create({
@@ -178,7 +178,7 @@ export const updateComplaintStatus = async (req, res) => {
     if (remark && remark.trim() !== '') {
       complaint.adminRemarks.push({
         remark: remark.trim(),
-        addedBy: req.user.fullName || 'Pardhu',
+        addedBy: req.user.fullName || 'Admin',
         createdAt: new Date(),
       });
     }
@@ -191,7 +191,7 @@ export const updateComplaintStatus = async (req, res) => {
         complaint: complaint._id,
         previousStatus,
         newStatus: status,
-        changedBy: req.user.fullName || 'Pardhu',
+        changedBy: req.user.fullName || 'Admin',
         changedByRole: 'admin',
         remark: remark || `Status updated from ${previousStatus} to ${status}`,
       });
@@ -250,7 +250,7 @@ export const confirmResolution = async (req, res) => {
       remark: accepted ? `Student accepted resolution: ${comment}` : `Student rejected resolution: ${comment}`,
     });
 
-    // Notify Admin (Pardhu)
+    // Notify Admin
     const adminUser = await User.findOne({ role: 'admin' });
     if (adminUser) {
       await Notification.create({

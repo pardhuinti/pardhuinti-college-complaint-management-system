@@ -142,7 +142,7 @@ export const seedInitialData = async () => {
     if (!existingAdmin) {
       existingAdmin = await User.create({
         studentId: 'ADM-001',
-        fullName: 'Administrator',
+        fullName: 'Admin',
         email: adminLowerEmail,
         phoneNumber: '+1 800 555 0199',
         department: 'Administration & Infrastructure Management',
@@ -154,6 +154,9 @@ export const seedInitialData = async () => {
         status: 'active',
       });
       console.log('[Seed] Admin user created successfully with email:', adminLowerEmail);
+    } else if (existingAdmin.fullName !== 'Admin') {
+      existingAdmin.fullName = 'Admin';
+      await existingAdmin.save();
     }
 
     // Check if student user exists; create only if missing

@@ -29,12 +29,14 @@ import {
 } from 'recharts';
 import API from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import StatusBadge from '../../components/common/StatusBadge';
 
 // Professional institutional palette: clean blues, slates, teals, and ambers (NO purple)
 const COLORS = ['#2563eb', '#0284c7', '#0d9488', '#f59e0b', '#10b981', '#475569', '#ef4444'];
 
 const AdminDashboard = () => {
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [recentComplaints, setRecentComplaints] = useState([]);
@@ -88,7 +90,7 @@ const AdminDashboard = () => {
               <ShieldCheck className="w-3.5 h-3.5" /> Chief Administrator Desk
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-white">
-              Pardhu
+              {user?.fullName || 'Admin'}
             </h1>
             <p className="text-xs text-slate-400 mt-0.5">
               System Administrator • Facilities operations, complaint records, and student rosters

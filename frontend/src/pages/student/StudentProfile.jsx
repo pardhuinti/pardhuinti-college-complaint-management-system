@@ -15,8 +15,7 @@ const StudentProfile = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Mandatory Role-Based Display Name Rule
-  const displayName = isAdmin ? 'Pardhu' : 'Student';
+  const displayName = isAdmin ? 'Admin' : (user?.fullName || 'Student');
   const portalBadge = isAdmin ? 'Administrator Desk' : 'Student Portal';
 
   const handlePasswordChange = async (e) => {

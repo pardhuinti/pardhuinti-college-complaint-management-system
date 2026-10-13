@@ -377,7 +377,7 @@ const AdminComplaints = () => {
                   className="p-5 rounded-2xl bg-brand-500/5 border border-brand-500/20 space-y-4"
                 >
                   <h4 className="text-xs font-bold text-brand-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4" /> Update Status &amp; Dispatch Remarks (Pardhu)
+                    <ShieldCheck className="w-4 h-4" /> Update Status &amp; Dispatch Remarks (Admin)
                   </h4>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -461,7 +461,7 @@ const AdminComplaints = () => {
                       {selectedComplaint.adminRemarks.map((rem, idx) => (
                         <div key={idx} className="p-3 rounded-xl bg-slate-900/50 border border-slate-800 text-xs">
                           <div className="flex items-center justify-between text-brand-400 font-bold mb-1">
-                            <span>{rem.addedBy || 'Pardhu'}</span>
+                            <span>{rem.addedBy || 'Admin'}</span>
                             <span className="text-[10px] text-slate-500">
                               {new Date(rem.createdAt).toLocaleString()}
                             </span>

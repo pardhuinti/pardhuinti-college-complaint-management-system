@@ -57,7 +57,7 @@ const seedDatabase = async () => {
     if (!admin) {
       admin = await User.create({
         studentId: 'ADM-001',
-        fullName: 'Pardhu',
+        fullName: 'Admin',
         email: adminLowerEmail,
         phoneNumber: '+1 800 555 0199',
         department: 'Administration & Infrastructure Management',
@@ -69,6 +69,7 @@ const seedDatabase = async () => {
         status: 'active',
       });
     } else {
+      admin.fullName = 'Admin';
       admin.email = adminLowerEmail;
       admin.password = adminPassword;
       await admin.save();

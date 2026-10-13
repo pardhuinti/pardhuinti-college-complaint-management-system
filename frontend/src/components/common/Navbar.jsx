@@ -15,8 +15,7 @@ const Navbar = ({ onToggleSidebar }) => {
   const navigate = useNavigate();
 
   const isAdmin = user?.role === 'admin';
-  // MANDATORY REQUIREMENT: Display name is "Pardhu" for Admin, "Student" for Student Portal
-  const displayName = isAdmin ? 'Pardhu' : 'Student';
+  const displayName = isAdmin ? 'Admin' : (user?.fullName || 'Student');
   const logoLink = isAdmin ? '/admin/dashboard' : '/student/dashboard';
 
   useEffect(() => {
