@@ -10,3 +10,9 @@ npm run dev
 
 The backend runs on port 5000 and the frontend runs on port 3000. The frontend
 proxies API requests to the backend during local development.
+
+To start only the backend from the project folder, run:
+
+```powershell
+node server.js
+```
