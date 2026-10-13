@@ -1,14 +1,6 @@
 import mongoose from 'mongoose';
-import dns from 'dns';
 import User from '../models/User.js';
 import Complaint from '../models/Complaint.js';
-
-// Safe DNS fallback for local environments
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1']);
-} catch (e) {
-  // Ignore DNS override errors on restricted environments
-}
 
 /**
  * Global connection cache for serverless environments (e.g. Vercel)
@@ -28,10 +20,42 @@ const getDefaultCredentials = () => {
   return { adminEmail, adminPassword, studentEmail, studentPassword };
 };
 
-export const connectDB = async () => {
-  const uri = process.env.MONGODB_URI;
+/**
+ * Derives a direct replica set URI from an SRV URI for resilient failover
+ * when DNS SRV resolution encounters ECONNREFUSED or restricted UDP port 53.
+ */
+const getDirectReplicaUri = (srvUri) => {
+  if (process.env.MONGODB_DIRECT_URI) {
+    return process.env.MONGODB_DIRECT_URI.trim();
+  }
 
-  if (!uri) {
+  if (!srvUri || !srvUri.startsWith('mongodb+srv://')) {
+    return null;
+  }
+
+  try {
+    const match = srvUri.match(/mongodb\+srv:\/\/([^:]+):([^@]+)@([^\/]+)\/([^?]+)/);
+    if (!match) return null;
+    const [, user, pass, clusterHost, dbName] = match;
+
+    if (clusterHost.includes('cluster0.gmet98d.mongodb.net')) {
+      const shardHosts = [
+        'ac-02ww9ym-shard-00-00.gmet98d.mongodb.net:27017',
+        'ac-02ww9ym-shard-00-01.gmet98d.mongodb.net:27017',
+        'ac-02ww9ym-shard-00-02.gmet98d.mongodb.net:27017',
+      ].join(',');
+      return `mongodb://${user}:${pass}@${shardHosts}/${dbName}?ssl=true&replicaSet=atlas-iua3u8-shard-0&authSource=admin&retryWrites=true&w=majority`;
+    }
+  } catch (e) {
+    // Return null if regex fails
+  }
+  return null;
+};
+
+export const connectDB = async () => {
+  const primaryUri = process.env.MONGODB_URI;
+
+  if (!primaryUri) {
     throw new Error('MONGODB_URI is not defined in environment variables');
   }
 
@@ -43,20 +67,50 @@ export const connectDB = async () => {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-      serverSelectionTimeoutMS: 10000,
-      connectTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 8000,
+      connectTimeoutMS: 8000,
     };
 
     console.log('[Database] Establishing MongoDB connection...');
-    cached.promise = mongoose.connect(uri, opts).then((mongooseInstance) => {
-      console.log(`[Database] MongoDB Connected: ${mongooseInstance.connection.host}`);
-      return mongooseInstance;
-    });
+
+    const attemptConnect = async () => {
+      try {
+        const instance = await mongoose.connect(primaryUri, opts);
+        console.log(`[Database] MongoDB Connected: ${instance.connection.host}`);
+        return instance;
+      } catch (srvError) {
+        const isSrvIssue =
+          srvError.message.includes('querySrv') ||
+          srvError.message.includes('ECONNREFUSED') ||
+          srvError.message.includes('ENOTFOUND') ||
+          srvError.message.includes('Server selection timed out');
+
+        const fallbackUri = getDirectReplicaUri(primaryUri);
+
+        if (isSrvIssue && fallbackUri) {
+          console.warn(`[Database Warning] SRV lookup issue encountered: ${srvError.message}`);
+          console.log('[Database] Activating direct replica set fallback connection...');
+          try {
+            const fallbackInstance = await mongoose.connect(fallbackUri, opts);
+            console.log(
+              `[Database] MongoDB Connected (via ReplicaSet Fallback): ${fallbackInstance.connection.host}`
+            );
+            return fallbackInstance;
+          } catch (fallbackError) {
+            console.error(`[Database Error] Direct fallback connection failed: ${fallbackError.message}`);
+            throw fallbackError;
+          }
+        }
+        throw srvError;
+      }
+    };
+
+    cached.promise = attemptConnect();
   }
 
   try {
     cached.conn = await cached.promise;
-    
+
     // Seed initial demo data once per deployment lifecycle if needed
     if (!cached.isSeeded) {
       cached.isSeeded = true;
@@ -157,4 +211,3 @@ export const seedInitialData = async () => {
     console.error('[Database Seed Error]:', err.message);
   }
 };
-

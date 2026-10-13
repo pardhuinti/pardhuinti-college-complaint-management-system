@@ -215,7 +215,7 @@ const NewComplaint = () => {
                       setFile(null);
                       setPreview(null);
                     }}
-                    className="p-1 rounded-full bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white transition-colors"
+                    className="p-1 rounded-md bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>

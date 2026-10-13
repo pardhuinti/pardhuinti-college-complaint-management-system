@@ -85,7 +85,7 @@ const Navbar = ({ onToggleSidebar }) => {
               className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-800 transition-colors"
             >
               {/* Default Empty Avatar Placeholder - NO AI photos */}
-              <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
+              <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
                 <User className="w-4 h-4" />
               </div>
               <div className="hidden md:block text-left">
@@ -101,7 +101,7 @@ const Navbar = ({ onToggleSidebar }) => {
 
             {/* Profile Dropdown */}
             {profileMenuOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-slate-900 dark:bg-[#151C28] rounded-2xl border border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95">
+              <div className="absolute right-0 mt-2 w-56 bg-slate-900 dark:bg-[#151C28] rounded-xl border border-slate-800 shadow-xl py-2 z-50">
                 <div className="px-4 py-2 border-b border-slate-800">
                   <p className="text-xs font-bold text-white">{displayName}</p>
                   <p className="text-[11px] text-slate-400 truncate">{user?.email}</p>

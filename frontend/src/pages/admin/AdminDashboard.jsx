@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import {
   Users,
   FileText,
@@ -32,7 +31,8 @@ import API from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import StatusBadge from '../../components/common/StatusBadge';
 
-const COLORS = ['#6366f1', '#a855f7', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444'];
+// Professional institutional palette: clean blues, slates, teals, and ambers (NO purple)
+const COLORS = ['#2563eb', '#0284c7', '#0d9488', '#f59e0b', '#10b981', '#475569', '#ef4444'];
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -76,107 +76,95 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header Banner - MANDATORY Name Pardhu */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 border border-slate-800 text-white shadow-xl">
+      {/* Header Banner - Solid Institutional Navy/Slate */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-xl bg-[#151C28] border border-slate-800 text-white shadow-sm">
         <div className="flex items-center gap-4">
-          {/* Default Empty Avatar Placeholder */}
-          <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shrink-0">
-            <User className="w-7 h-7" />
+          <div className="w-12 h-12 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 shrink-0">
+            <User className="w-6 h-6" />
           </div>
 
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold mb-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-emerald-400 text-xs font-semibold mb-1">
               <ShieldCheck className="w-3.5 h-3.5" /> Chief Administrator Desk
             </div>
-            {/* MANDATORY: Admin Name MUST BE Pardhu */}
-            <h1 className="text-2xl lg:text-3xl font-black tracking-tight">
+            <h1 className="text-2xl font-bold tracking-tight text-white">
               Pardhu
             </h1>
-            <p className="text-xs text-slate-300 mt-0.5">
-              System Administrator • Analytics, student rosters, and complaint lifecycle resolution
+            <p className="text-xs text-slate-400 mt-0.5">
+              System Administrator • Facilities operations, complaint records, and student rosters
             </p>
           </div>
         </div>
 
         <button
           onClick={() => navigate('/admin/complaints')}
-          className="px-5 py-3 rounded-2xl bg-white text-slate-900 font-extrabold text-xs shadow-lg hover:bg-slate-100 flex items-center justify-center gap-2 transition-all self-start sm:self-auto shrink-0"
+          className="px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-sm flex items-center justify-center gap-2 transition-colors self-start sm:self-auto shrink-0"
         >
-          Open Ticket Workspace <ArrowRight className="w-4 h-4 text-purple-600" />
+          Open Ticket Workspace <ArrowRight className="w-4 h-4 text-white" />
         </button>
       </div>
 
       {/* KPI Cards (Real Data from MongoDB Atlas) */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-        <div className="p-4 rounded-2xl bg-[#151C28] border border-slate-800 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Students</p>
-          <h3 className="text-xl font-black text-white mt-1">{kpis.totalStudents || 0}</h3>
-          <span className="text-[10px] text-emerald-400 font-semibold mt-1 inline-block">Registered</span>
+        <div className="p-4 rounded-xl bg-[#151C28] border border-slate-800 shadow-sm">
+          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Students</p>
+          <h3 className="text-xl font-bold text-white mt-1">{kpis.totalStudents || 0}</h3>
+          <span className="text-[10px] text-emerald-400 font-medium mt-1 inline-block">Registered</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#151C28] border border-slate-800 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Tickets</p>
-          <h3 className="text-xl font-black text-brand-400 mt-1">{kpis.totalComplaints || 0}</h3>
+        <div className="p-4 rounded-xl bg-[#151C28] border border-slate-800 shadow-sm">
+          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Tickets</p>
+          <h3 className="text-xl font-bold text-blue-400 mt-1">{kpis.totalComplaints || 0}</h3>
           <span className="text-[10px] text-slate-400 mt-1 inline-block">All Time</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#151C28] border border-slate-800 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pending</p>
-          <h3 className="text-xl font-black text-amber-500 mt-1">{kpis.pending || 0}</h3>
+        <div className="p-4 rounded-xl bg-[#151C28] border border-slate-800 shadow-sm">
+          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Pending</p>
+          <h3 className="text-xl font-bold text-amber-500 mt-1">{kpis.pending || 0}</h3>
           <span className="text-[10px] text-amber-400 mt-1 inline-block">Awaiting Review</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#151C28] border border-slate-800 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">In Progress</p>
-          <h3 className="text-xl font-black text-purple-400 mt-1">{kpis.inProgress || 0}</h3>
-          <span className="text-[10px] text-purple-400 mt-1 inline-block">Active Repair</span>
+        <div className="p-4 rounded-xl bg-[#151C28] border border-slate-800 shadow-sm">
+          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">In Progress</p>
+          <h3 className="text-xl font-bold text-sky-400 mt-1">{kpis.inProgress || 0}</h3>
+          <span className="text-[10px] text-sky-400 mt-1 inline-block">Active Repair</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#151C28] border border-slate-800 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Resolved</p>
-          <h3 className="text-xl font-black text-emerald-400 mt-1">{kpis.resolved || 0}</h3>
-          <span className="text-[10px] text-emerald-400 mt-1 inline-block">Awaiting Close</span>
+        <div className="p-4 rounded-xl bg-[#151C28] border border-slate-800 shadow-sm">
+          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Resolved</p>
+          <h3 className="text-xl font-bold text-emerald-400 mt-1">{kpis.resolved || 0}</h3>
+          <span className="text-[10px] text-emerald-400 mt-1 inline-block">Verified</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#151C28] border border-slate-800 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Closed</p>
-          <h3 className="text-xl font-black text-slate-400 mt-1">{kpis.closed || 0}</h3>
-          <span className="text-[10px] text-slate-500 mt-1 inline-block">Closed</span>
+        <div className="p-4 rounded-xl bg-[#151C28] border border-slate-800 shadow-sm">
+          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Closed</p>
+          <h3 className="text-xl font-bold text-slate-400 mt-1">{kpis.closed || 0}</h3>
+          <span className="text-[10px] text-slate-500 mt-1 inline-block">Archived</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#151C28] border border-slate-800 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Reopened</p>
-          <h3 className="text-xl font-black text-rose-400 mt-1">{kpis.reopened || 0}</h3>
-          <span className="text-[10px] text-rose-400 mt-1 inline-block">Reopened</span>
+        <div className="p-4 rounded-xl bg-[#151C28] border border-slate-800 shadow-sm">
+          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Reopened</p>
+          <h3 className="text-xl font-bold text-rose-400 mt-1">{kpis.reopened || 0}</h3>
+          <span className="text-[10px] text-rose-400 mt-1 inline-block">Follow-up Required</span>
         </div>
       </div>
 
       {/* Analytics Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Monthly Trend Area Chart */}
-        <div className="lg:col-span-2 p-6 rounded-3xl bg-[#151C28] border border-slate-800 shadow-sm space-y-4">
+        <div className="lg:col-span-2 p-6 rounded-xl bg-[#151C28] border border-slate-800 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-brand-400" /> Intake &amp; Resolution Velocity
+                <TrendingUp className="w-4 h-4 text-blue-400" /> Intake &amp; Resolution Volume
               </h3>
-              <p className="text-[11px] text-slate-400">Monthly intake vs resolved ticket volume</p>
+              <p className="text-[11px] text-slate-400">Monthly intake vs resolved ticket trends</p>
             </div>
           </div>
 
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={monthlyTrends}>
-                <defs>
-                  <linearGradient id="colorComplaints" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="colorResolved" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} />
                 <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} />
                 <YAxis stroke="#94a3b8" fontSize={11} />
@@ -184,7 +172,7 @@ const AdminDashboard = () => {
                   contentStyle={{
                     backgroundColor: '#1e293b',
                     borderColor: '#334155',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     fontSize: '12px',
                     color: '#fff',
                   }}
@@ -192,10 +180,10 @@ const AdminDashboard = () => {
                 <Area
                   type="monotone"
                   dataKey="complaints"
-                  stroke="#6366f1"
+                  stroke="#2563eb"
                   strokeWidth={2}
-                  fillOpacity={1}
-                  fill="url(#colorComplaints)"
+                  fillOpacity={0.15}
+                  fill="#2563eb"
                   name="Total Intake"
                 />
                 <Area
@@ -203,8 +191,8 @@ const AdminDashboard = () => {
                   dataKey="resolved"
                   stroke="#10b981"
                   strokeWidth={2}
-                  fillOpacity={1}
-                  fill="url(#colorResolved)"
+                  fillOpacity={0.15}
+                  fill="#10b981"
                   name="Resolved"
                 />
               </AreaChart>
@@ -213,17 +201,17 @@ const AdminDashboard = () => {
         </div>
 
         {/* Category Breakdown Pie Chart */}
-        <div className="p-6 rounded-3xl bg-[#151C28] border border-slate-800 shadow-sm space-y-4">
+        <div className="p-6 rounded-xl bg-[#151C28] border border-slate-800 shadow-sm space-y-4">
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <PieIcon className="w-4 h-4 text-purple-400" /> Category Distribution
+              <PieIcon className="w-4 h-4 text-sky-400" /> Category Distribution
             </h3>
-            <p className="text-[11px] text-slate-400">Distribution by campus facility</p>
+            <p className="text-[11px] text-slate-400">Distribution across campus facilities</p>
           </div>
 
           <div className="h-64 w-full flex items-center justify-center">
             {categoryData.length === 0 ? (
-              <p className="text-xs text-slate-400">No category data registered</p>
+              <p className="text-xs text-slate-400">No category records registered</p>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -245,7 +233,7 @@ const AdminDashboard = () => {
                     contentStyle={{
                       backgroundColor: '#1e293b',
                       borderColor: '#334155',
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       fontSize: '12px',
                       color: '#fff',
                     }}
@@ -258,7 +246,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Activity Table */}
-      <div className="p-6 rounded-3xl bg-[#151C28] border border-slate-800 shadow-sm space-y-4">
+      <div className="p-6 rounded-xl bg-[#151C28] border border-slate-800 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-white">Recent Complaint Log</h3>
@@ -266,7 +254,7 @@ const AdminDashboard = () => {
           </div>
           <button
             onClick={() => navigate('/admin/complaints')}
-            className="text-xs font-bold text-brand-400 hover:underline"
+            className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors"
           >
             View All in Workspace
           </button>
@@ -288,8 +276,7 @@ const AdminDashboard = () => {
             <tbody className="divide-y divide-slate-800/60">
               {recentComplaints.map((c) => (
                 <tr key={c._id || c.complaintId} className="hover:bg-slate-900/40">
-                  <td className="py-3 px-2 font-bold text-brand-400">{c.complaintId}</td>
-                  {/* ADMIN PORTAL: Can see actual student name (e.g. Alex Mercer) */}
+                  <td className="py-3 px-2 font-bold text-blue-400">{c.complaintId}</td>
                   <td className="py-3 px-2 text-slate-200">
                     {c.studentInfo?.fullName || 'Student'}
                   </td>
@@ -306,7 +293,7 @@ const AdminDashboard = () => {
                   <td className="py-3 px-2 text-right">
                     <button
                       onClick={() => navigate(`/admin/complaints?id=${c._id || c.complaintId}`)}
-                      className="px-3 py-1 rounded-lg bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 font-semibold"
+                      className="px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium"
                     >
                       Manage
                     </button>

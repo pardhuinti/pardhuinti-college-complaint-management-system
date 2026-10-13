@@ -1,10 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="favGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4F46E5" />
-      <stop offset="100%" stop-color="#06B6D4" />
-    </linearGradient>
-  </defs>
-  <path d="M50 5 L90 20 V55 C90 80 50 95 50 95 C50 95 10 80 10 55 V20 Z" fill="url(#favGrad)"/>
-  <path d="M35 50 L45 60 L68 37" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Solid institutional navy background -->
+  <rect width="64" height="64" rx="8" fill="#0F172A"/>
+  
+  <!-- Outer Shield Contour -->
+  <path d="M32 8 L52 16 V34 C52 46 32 56 32 56 C32 56 12 46 12 34 V16 Z" fill="#1E293B" stroke="#334155" stroke-width="2"/>
+  
+  <!-- College Pillar / Scales of Justice Motif -->
+  <path d="M22 22 H42 M32 22 V42 M24 42 H40 M20 46 H44" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Resolution Checkmark Accent -->
+  <path d="M26 33 L30 37 L38 27" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

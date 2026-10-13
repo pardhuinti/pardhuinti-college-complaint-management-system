@@ -84,7 +84,7 @@ const NotificationDrawer = ({ isOpen, onClose }) => {
               </div>
               <h2 className="font-bold text-slate-900 dark:text-white">Notifications</h2>
               {unreadCount > 0 && (
-                <span className="px-2 py-0.5 text-xs font-bold bg-brand-600 text-white rounded-full">
+                <span className="px-2 py-0.5 text-xs font-bold bg-blue-600 text-white rounded-md">
                   {unreadCount} new
                 </span>
               )}

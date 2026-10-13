@@ -157,7 +157,7 @@ const StudentManagement = () => {
                     <td className="py-3.5 px-3">
                       <div className="flex items-center gap-3">
                         {/* Empty Default Avatar Placeholder */}
-                        <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
                           <User className="w-4 h-4" />
                         </div>
                         <div>
@@ -184,7 +184,7 @@ const StudentManagement = () => {
                     </td>
                     <td className="py-3.5 px-3">
                       <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold ${
                           student.status === 'active'
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                             : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
@@ -259,7 +259,7 @@ const StudentManagement = () => {
               {/* Header */}
               <div className="p-6 border-b border-slate-800 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
+                  <div className="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
                     <User className="w-5 h-5" />
                   </div>
                   <div>

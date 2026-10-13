@@ -304,8 +304,8 @@ const AdminComplaints = () => {
               {/* Drawer Body Scrollable */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
                 {/* Student Info Card */}
-                <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+                <div className="p-4 rounded-lg bg-slate-900 border border-slate-800 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
                     <User className="w-5 h-5" />
                   </div>
                   <div>

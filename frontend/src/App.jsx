@@ -7,10 +7,13 @@ import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Navbar from './components/common/Navbar';
 import Sidebar from './components/common/Sidebar';
+import Footer from './components/common/Footer';
 
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import PrivacyPolicy from './pages/legal/PrivacyPolicy';
+import TermsAndConditions from './pages/legal/TermsAndConditions';
 
 import StudentDashboard from './pages/student/StudentDashboard';
 import NewComplaint from './pages/student/NewComplaint';
@@ -30,8 +33,11 @@ const DashboardLayout = () => {
       <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       <div className="flex-1 flex">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 lg:ml-64 p-4 lg:p-8 min-w-0">
-          <Outlet />
+        <main className="flex-1 lg:ml-64 p-4 lg:p-8 min-w-0 flex flex-col justify-between">
+          <div>
+            <Outlet />
+          </div>
+          <Footer />
         </main>
       </div>
     </div>
@@ -57,6 +63,12 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+            {/* Public Legal & Compliance Routes */}
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
 
             {/* Root Navigation */}
             <Route path="/" element={<RootRedirect />} />

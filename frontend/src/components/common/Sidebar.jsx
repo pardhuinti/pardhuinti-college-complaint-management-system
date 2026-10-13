@@ -78,8 +78,8 @@ const Sidebar = ({ isOpen, onClose }) => {
         </div>
 
         {/* User Card - Default Empty Avatar (NO AI Images) */}
-        <div className="m-4 p-3 rounded-2xl bg-slate-800/80 border border-slate-700/60 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-slate-200 shrink-0">
+        <div className="m-4 p-3 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-slate-700 border border-slate-600 flex items-center justify-center text-slate-200 shrink-0">
             <User className="w-5 h-5" />
           </div>
           <div className="overflow-hidden">
